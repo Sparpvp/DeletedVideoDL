@@ -26,6 +26,8 @@ func main() {
 
 	err := downloader.DownloadVideo(hVideo)
 	if err != nil {
-		log.Fatalln("Couldn't download video")
+		log.SetFlags(0)
+		log.Println(err)
+		log.Fatalln("Couldn't download video.")
 	}
 }
