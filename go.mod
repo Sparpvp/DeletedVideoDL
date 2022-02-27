@@ -1,4 +1,4 @@
-module deletedVideoDownloader
+module github.com/Sparpvp/DeletedVideoDL
 
 go 1.17
 
