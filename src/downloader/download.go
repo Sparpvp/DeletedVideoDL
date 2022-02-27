@@ -29,13 +29,16 @@ func DownloadVideo(hVideo parser.Video) error {
 		os.Exit(1)
 	}()
 
+	counter := &parser.WriteCounter{}
+	head, _ := http.Head(hVideo.Webarchive_Id)
+	counter.Init(head.ContentLength)
+
 	res, err := http.Get(hVideo.Webarchive_Id)
 	if err != nil {
 		log.Fatalln(err)
 	}
 	defer res.Body.Close()
 
-	counter := &parser.WriteCounter{}
 	if _, err = io.Copy(out, io.TeeReader(res.Body, counter)); err != nil {
 		out.Close()
 		return err

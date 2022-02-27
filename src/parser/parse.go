@@ -8,12 +8,17 @@ import (
 )
 
 type WriteCounter struct {
-	Total uint64
+	Total         uint64
+	ContentLength int64
 }
 
 type Video struct {
 	Webarchive_Id string
 	Video_Id      string
+}
+
+func (wc *WriteCounter) Init(ContentLength int64) {
+	wc.ContentLength = ContentLength
 }
 
 func (wc *WriteCounter) Write(p []byte) (int, error) {
@@ -27,5 +32,5 @@ func (wc *WriteCounter) Write(p []byte) (int, error) {
 func (wc WriteCounter) PrintProgress() {
 
 	fmt.Printf("\r%s", strings.Repeat(" ", 35))
-	fmt.Printf("\rDownloading... %s complete", humanize.Bytes(wc.Total))
+	fmt.Printf("\rDownloading... %s/%v complete", humanize.Bytes(wc.Total), humanize.Bytes(uint64(wc.ContentLength)))
 }
