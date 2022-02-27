@@ -1,12 +1,14 @@
 package downloader
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 
 	"github.com/Sparpvp/DeletedVideoDL/src/parser"
@@ -41,6 +43,17 @@ func DownloadVideo(hVideo parser.Video) error {
 
 	if _, err = io.Copy(out, io.TeeReader(res.Body, counter)); err != nil {
 		out.Close()
+		return err
+	}
+
+	b, err := os.ReadFile(hVideo.Video_Id + ".mp4")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	chunked := b[:50]
+	match := strings.Index(string(chunked), "<!DOCTYPE html>")
+	if match != -1 {
+		err := errors.New("\n\nerr: video not present in archive")
 		return err
 	}
 
